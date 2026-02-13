@@ -79,6 +79,10 @@ def evalInst(p):
     assert type(p) is tuple
     if p[0] == 'if':
         if evalExpr(p[1]): evalInst(p[2])
+        elif len(p) == 4 and p[3][0] == 'else':
+            evalInst(p[3][1])
+    if p[0] == "assign":
+        names[p[1]] = p[2]
     if p[0] == 'bloc':
         evalInst(p[1])
         evalInst(p[2])
@@ -88,6 +92,12 @@ def evalInst(p):
 
 def evalExpr(p):
     if type(p) is int : return p
+
+    if p[1] in names.keys():
+        p[1] = names[evalExpr(p[1])]
+    if p[2] in names.keys():
+        p[2] = names[evalExpr(p[2])]
+
     match p[0]:
         case '*':
             return evalExpr(p[1]) * evalExpr(p[2])
@@ -155,7 +165,8 @@ def p_bloc(p):
 
 def p_statement_assign(p):
     'statement : NAME EQUAL expression'
-    names[p[1]] = p[3]
+    #names[p[1]] = p[3]
+    p[0] = ("assign", p[1], p[3])
 
 
 def p_statement_print(p):
@@ -220,8 +231,12 @@ def p_expression_name(p):
     # p[0] = names[p[1]]
     p[0] = p[1]
 
+def p_statement_else(p):
+    'statement : IF LPAREN expression RPAREN LBRACKET bloc RBRACKET ELSE LBRACKET bloc RBRACKET'
+    p[0] = ('if', p[3], p[6], ('else', p[10]))
+
 def p_statement_if(p):
-    'statement : IF LPAREN expression RPAREN LBRACKET bloc RBRACKET'
+    '''statement : IF LPAREN expression RPAREN LBRACKET bloc RBRACKET'''
     p[0] = ('if', p[3], p[6])
 
 
@@ -231,9 +246,9 @@ def p_error(p): print("Syntax error in input!")
 import ply.yacc as yacc
 
 yacc.yacc()
-s = ('if (1==1) {   '
+s = ('x=2;if (x==2) {   '
      'if(1+1==2){'
      'print(12);'
-     '};};print(1+2);')
+     '};} else {print(3+10);};print(1+2);')
 
 yacc.parse(s)
