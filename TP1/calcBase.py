@@ -97,6 +97,17 @@ def evalExpr(p):
             return evalExpr(p[1]) - evalExpr(p[2])
         case '/':
             return evalExpr(p[1]) / evalExpr(p[2])
+        case '==':
+            return evalExpr(p[1]) == evalExpr(p[2])
+        case '<' :
+            return evalExpr(p[1]) < evalExpr(p[2])
+        case '>' :
+            return evalExpr(p[1]) < evalExpr(p[2])
+        case '&&' :
+            return evalExpr(p[1]) and evalExpr(p[2])
+        case '||' :
+             return evalExpr(p[1]) or evalExpr(p[2])
+
 
 def printTreeGraph(t):
     graph = gv.Digraph(format='pdf')
@@ -155,22 +166,22 @@ def p_statement_print(p):
 
 def p_expression_binop_inf(p):
     'expression : expression INF expression'
-    p[0] = p[1] < p[3]
+    p[0] = ('<', p[1], p[3])
 
 
 def p_expression_binop_equal(p):
     'expression : expression EQUALEQUAL expression'
-    p[0] = p[1] == p[3]
+    p[0] = ('==', p[1], p[3])
 
 
 def p_expression_binop_and(p):
     'expression : expression AND expression'
-    p[0] = p[1] and p[3]
+    p[0] = ('&&', p[1], p[3])
 
 
 def p_expression_binop_or(p):
     'expression : expression OR expression'
-    p[0] = p[1] or p[3]
+    p[0] = ('||', p[1], p[3])
 
 
 def p_expression_binop_plus(p):
@@ -220,5 +231,9 @@ def p_error(p): print("Syntax error in input!")
 import ply.yacc as yacc
 
 yacc.yacc()
-s = 'if (1==2) {print(1+2);print(1+2);};print(1+2);'
+s = ('if (1==1) {   '
+     'if(1+1==2){'
+     'print(12);'
+     '};};print(1+2);')
+
 yacc.parse(s)
