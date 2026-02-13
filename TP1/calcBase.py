@@ -77,6 +77,8 @@ lex.lex()
 def evalInst(p):
     if p == 'empty': return
     assert type(p) is tuple
+    if p[0] == 'if':
+        if evalExpr(p[1]): evalInst(p[2])
     if p[0] == 'bloc':
         evalInst(p[1])
         evalInst(p[2])
@@ -85,10 +87,16 @@ def evalInst(p):
 
 
 def evalExpr(p):
-    if type(p) is int: return p
-    if p[0] == '+': return evalExpr(p[1]) + evalExpr(p[2])
-    if p[0] == '*': return evalExpr(p[1]) * evalExpr(p[2])
-
+    if type(p) is int : return p
+    match p[0]:
+        case '*':
+            return evalExpr(p[1]) * evalExpr(p[2])
+        case '+':
+            return evalExpr(p[1]) + evalExpr(p[2])
+        case '-':
+            return evalExpr(p[1]) - evalExpr(p[2])
+        case '/':
+            return evalExpr(p[1]) / evalExpr(p[2])
 
 def printTreeGraph(t):
     graph = gv.Digraph(format='pdf')
@@ -201,16 +209,16 @@ def p_expression_name(p):
     # p[0] = names[p[1]]
     p[0] = p[1]
 
-def p_expression_if(p):
-    'expression : IF LPAREN expression RPAREN LBRACKET bloc RBRACKET'
-    if p[2] : p[0] = p[3]
+def p_statement_if(p):
+    'statement : IF LPAREN expression RPAREN LBRACKET bloc RBRACKET'
+    p[0] = ('if', p[3], p[6])
 
 
-def p_error(p):    print("Syntax error in input!")
+def p_error(p): print("Syntax error in input!")
 
 
 import ply.yacc as yacc
 
 yacc.yacc()
-s = 'if(1<2){print(1+2);};'
+s = 'if (1==2) {print(1+2);print(1+2);};print(1+2);'
 yacc.parse(s)
