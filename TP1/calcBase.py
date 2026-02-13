@@ -8,7 +8,11 @@ import uuid
 import graphviz as gv
 
 reserved = {
-    'print': 'PRINT'
+    'print': 'PRINT',
+    'if' : "IF",
+    'else' : 'ELSE',
+    "for" : 'FOR',
+    'while' : "WHILE",
 }
 
 # tokens = ( 'INF', 'EQUALEQUAL', 'EQUAL', 'NAME', 'NUMBER','MINUS', 'PLUS','TIMES','DIVIDE', 'LPAREN','RPAREN', 'OR', 'AND', 'SEMI' )
@@ -24,9 +28,11 @@ t_SEMI = r';'
 t_INF = r'<'
 t_EQUALEQUAL = r'=='
 t_EQUAL = r'='
+t_LBRACKET = r'\{'
+t_RBRACKET = r'\}'
 # t_NAME = r'[a-zA-Z_][a-zA-Z_0-9]*'
 tokens = ['INF', 'EQUALEQUAL', 'EQUAL', 'NAME', 'NUMBER', 'MINUS', 'PLUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'OR',
-          'AND', 'SEMI'] + list(reserved.values())
+          'AND', 'SEMI', 'LBRACKET', 'RBRACKET'] + list(reserved.values())
 
 
 def t_NAME(t):
@@ -195,6 +201,10 @@ def p_expression_name(p):
     # p[0] = names[p[1]]
     p[0] = p[1]
 
+def p_expression_if(p):
+    'expression : IF LPAREN expression RPAREN LBRACKET bloc RBRACKET'
+    if p[2] : p[0] = p[3]
+
 
 def p_error(p):    print("Syntax error in input!")
 
@@ -202,5 +212,5 @@ def p_error(p):    print("Syntax error in input!")
 import ply.yacc as yacc
 
 yacc.yacc()
-s = 'print(1+2);print(1+2);'
+s = 'if(1<2){print(1+2);};'
 yacc.parse(s)
