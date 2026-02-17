@@ -113,6 +113,10 @@ def p_statement_while(p):
     """statement : WHILE LPAREN expression RPAREN LBRACKET bloc RBRACKET"""
     p[0] = ('while', p[3], p[6])
 
+def p_statement_do_while(p):
+    """statement : DO LBRACKET bloc RBRACKET WHILE LPAREN expression RPAREN"""
+    p[0] = ('do_while', p[3], p[7])
+
 def p_error(p):
     print("Syntax error")
 
