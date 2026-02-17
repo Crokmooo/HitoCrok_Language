@@ -16,4 +16,4 @@ precedence = (
 
 tokens = ['INF', 'EQUALEQUAL', 'EQUAL', 'NAME', 'NUMBER', 'MINUS', 'PLUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'OR',
           'SUP', 'INFEQ', 'SUPEQ', 'MODULO', 'NOTEQ', 'PLUSPLUS', 'MINUSMINUS','PLUSEQUAL' ,'MINUSEQUAL' ,'MULTIPLYEQUAL' ,'DIVIDEQUAL' ,'MODEQUAL' ,'FLOOREQUAL' ,'POWEREQUAL',
-          'AND', 'SEMI', 'LBRACKET', 'RBRACKET', 'POWER', 'FLOOR'] + list(reserved.values())
+          'AND', 'SEMI', 'COMA', 'LBRACKET', 'RBRACKET', 'POWER', 'FLOOR'] + list(reserved.values())

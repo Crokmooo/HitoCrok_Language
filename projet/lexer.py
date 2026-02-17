@@ -38,6 +38,7 @@ t_LPAREN = r'\('
 t_RPAREN = r'\)'
 
 t_SEMI = r';'
+t_COMA = r','
 
 t_LBRACKET = r'\{'
 t_RBRACKET = r'\}'

@@ -19,6 +19,15 @@ def p_bloc(p):
     else:
         p[0] = ('bloc', 'empty', p[1])
 
+def p_printable(p):
+    """printable : expression
+                 | assignement
+                 | update"""
+    p[0] = p[1]
+
+def p_statement_simple(p):
+    """statement : printable"""
+    p[0] = p[1]
 
 def p_statement_assign(p):
     """statement : NAME EQUAL expression"""
@@ -26,9 +35,20 @@ def p_statement_assign(p):
 
 
 def p_statement_print(p):
-    """statement : PRINT LPAREN expression RPAREN"""
+    """statement : PRINT LPAREN printable RPAREN"""
     p[0] = ("print", p[3])
 
+def p_statement_print_multiple(p):
+    """statement : PRINT LPAREN printable COMA other_print RPAREN"""
+    p[0] = ("multiple_print", p[3], p[5])
+
+def p_statement_print_otherprint(p):
+    """other_print : printable COMA other_print
+                | printable"""
+    if len(p) == 4 :
+        p[0] = ("other_print", p[1], p[3])
+    else :
+        p[0] = ("other_print", p[1])
 
 def p_expression_binop(p):
     """expression : expression PLUS expression
@@ -58,7 +78,7 @@ def p_expression_number(p):
     p[0] = p[1]
 
 def p_expression_assignment_operation(p):
-    """statement : expression PLUSEQUAL expression
+    """assignement : expression PLUSEQUAL expression
                  | expression MINUSEQUAL expression
                  | expression MULTIPLYEQUAL expression
                  | expression DIVIDEQUAL expression
@@ -73,7 +93,7 @@ def p_expression_name(p):
     p[0] = p[1]
 
 def p_statement_update(p):
-    """statement : NAME PLUSPLUS
+    """update : NAME PLUSPLUS
                  | NAME MINUSMINUS"""
     p[0] = ('update', p[1], p[2])
 

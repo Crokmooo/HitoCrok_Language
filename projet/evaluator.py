@@ -2,6 +2,9 @@ names = {}
 
 def evalInst(p):
     if p == 'empty': return
+    if type(p) is int : return p
+    if type(p) is str : return names[p]
+
     assert type(p) is tuple
     match p[0]:
 
@@ -18,19 +21,36 @@ def evalInst(p):
 
         case "assign":
             names[p[1]] = evalExpr(p[2])
+            return names[p[1]]
 
         case 'bloc':
             evalInst(p[1])
             evalInst(p[2])
 
         case 'update':
-            update(p)
+            return update(p)
 
         case 'assign_op':
-            assign_op(p)
+            return assign_op(p)
 
         case 'print':
-            print('CALC> ', evalExpr(p[1]))
+            res = evalInst(p[1])
+            print('CALC>', res)
+            return res
+
+        case 'multiple_print' :
+            print(evalInst(p[1]), end=" ")
+            return evalInst(p[2])
+
+        case 'other_print':
+            if len(p) == 3:
+                print(evalInst(p[1]), end=" ")
+                return evalInst(p[2])
+            else :
+                print(evalInst(p[1]))
+                return evalInst(p[1])
+
+    return evalExpr(p)
 
 def update(p):
     match p[2]:
@@ -38,6 +58,7 @@ def update(p):
             names[p[1]] += 1
         case '--':
             names[p[1]] -= 1
+    return names[p[1]]
 
 def assign_op(p):
     if type(p) is int: return p
@@ -55,7 +76,7 @@ def assign_op(p):
         case '%=' : names[leftChild] %= evalExpr(rightChild)
         case '//=' : names[leftChild] //= evalExpr(rightChild)
         case '^=' : names[leftChild] **= evalExpr(rightChild)
-    return None
+    return names[leftChild]
 
 
 def evalExpr(p):
