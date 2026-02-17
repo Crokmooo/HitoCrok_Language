@@ -14,6 +14,9 @@ def evalInst(p):
                 evalInst(p[4])
                 evalInst(p[3])
 
+        case 'while':
+            while evalExpr(p[1]): evalInst(p[2])
+
         case 'if':
             if evalExpr(p[1]): evalInst(p[2])
             elif len(p) == 4 and p[3][0] == 'else':

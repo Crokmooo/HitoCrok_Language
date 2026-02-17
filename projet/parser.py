@@ -94,7 +94,7 @@ def p_expression_name(p):
 
 def p_statement_update(p):
     """update : NAME PLUSPLUS
-                 | NAME MINUSMINUS"""
+              | NAME MINUSMINUS"""
     p[0] = ('update', p[1], p[2])
 
 def p_statement_if(p):
@@ -109,6 +109,9 @@ def p_statement_for(p):
     """statement : FOR LPAREN statement SEMI expression SEMI statement RPAREN LBRACKET bloc RBRACKET"""
     p[0] = ('for', p[3], p[5], p[7], p[10])
 
+def p_statement_while(p):
+    """statement : WHILE LPAREN expression RPAREN LBRACKET bloc RBRACKET"""
+    p[0] = ('while', p[3], p[6])
 
 def p_error(p):
     print("Syntax error")
