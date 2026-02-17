@@ -2,19 +2,37 @@
 import ply.lex as lex
 from language import tokens, reserved
 
+t_PLUSPLUS = r'\+\+'
+t_MINUSMINUS = r'\-\-'
+
+t_PLUSEQUAL = r'\+='
+t_MINUSEQUAL = r'-='
+t_MULTIPLYEQUAL = r'\*='
+t_DIVIDEQUAL = r'/='
+t_MODEQUAL = r'%='
+t_FLOOREQUAL = r'//='
+t_POWEREQUAL = r'\^='
+
 t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIVIDE = r'/'
+t_MODULO = r'%'
+t_FLOOR = r'//'
+t_POWER = r'\^'
 
 t_OR = r'\|\|'
 t_AND = r'\&\&'
+
+t_INFEQ = r'<='
+t_SUPEQ = r'>='
 
 t_INF = r'<'
 t_SUP = r'>'
 
 t_EQUALEQUAL = r'=='
 t_EQUAL = r'='
+t_NOTEQ = r'!='
 
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
@@ -32,7 +50,7 @@ def t_NAME(t):
     return t
 
 def t_NUMBER(t):
-    r'\d+'
+    r'-?\d+'
     t.value = int(t.value)
     return t
 

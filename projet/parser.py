@@ -35,27 +35,47 @@ def p_expression_binop(p):
                   | expression MINUS expression
                   | expression TIMES expression
                   | expression DIVIDE expression
+                  | expression MODULO expression
+                  | expression INFEQ expression
+                  | expression SUPEQ expression
+                  | expression NOTEQ expression
                   | expression INF expression
                   | expression SUP expression
+                  | expression FLOOR expression
+                  | expression POWER expression
                   | expression EQUALEQUAL expression
                   | expression AND expression
                   | expression OR expression"""
 
     p[0] = (p[2], p[1], p[3])
 
-
 def p_expression_group(p):
     """expression : LPAREN expression RPAREN"""
     p[0] = p[2]
-
 
 def p_expression_number(p):
     """expression : NUMBER"""
     p[0] = p[1]
 
+def p_expression_assignment_operation(p):
+    """statement : expression PLUSEQUAL expression
+                 | expression MINUSEQUAL expression
+                 | expression MULTIPLYEQUAL expression
+                 | expression DIVIDEQUAL expression
+                 | expression MODEQUAL expression
+                 | expression FLOOREQUAL expression
+                 | expression POWEREQUAL expression"""
+
+    p[0] = ('assign_op', p[2], p[1], p[3])
+
 def p_expression_name(p):
     """expression : NAME"""
     p[0] = p[1]
+
+def p_statement_update(p):
+    """statement : NAME PLUSPLUS
+                 | NAME MINUSMINUS"""
+    p[0] = ('update', p[1], p[2])
 
 def p_statement_if(p):
     """statement : IF LPAREN expression RPAREN LBRACKET bloc RBRACKET"""

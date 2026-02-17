@@ -23,8 +23,39 @@ def evalInst(p):
             evalInst(p[1])
             evalInst(p[2])
 
+        case 'update':
+            update(p)
+
+        case 'assign_op':
+            assign_op(p)
+
         case 'print':
             print('CALC> ', evalExpr(p[1]))
+
+def update(p):
+    match p[2]:
+        case '++':
+            names[p[1]] += 1
+        case '--':
+            names[p[1]] -= 1
+
+def assign_op(p):
+    if type(p) is int: return p
+    if type(p) is str: return names[p]
+
+    operation = p[1]
+    leftChild = p[2]
+    rightChild = p[3]
+
+    match operation:
+        case '+=' : names[leftChild] += evalExpr(rightChild)
+        case '-=' : names[leftChild] -= evalExpr(rightChild)
+        case '*=' : names[leftChild] *= evalExpr(rightChild)
+        case '/=' : names[leftChild] /= evalExpr(rightChild)
+        case '%=' : names[leftChild] %= evalExpr(rightChild)
+        case '//=' : names[leftChild] //= evalExpr(rightChild)
+        case '^=' : names[leftChild] **= evalExpr(rightChild)
+    return None
 
 
 def evalExpr(p):
@@ -54,4 +85,16 @@ def evalExpr(p):
             return evalExpr(leftChild) and evalExpr(rightChild)
         case '||' :
             return evalExpr(leftChild) or evalExpr(rightChild)
+        case '<=' :
+            return evalExpr(leftChild) <= evalExpr(rightChild)
+        case '>=' :
+            return evalExpr(leftChild) >= evalExpr(rightChild)
+        case '%' :
+            return evalExpr(leftChild) % evalExpr(rightChild)
+        case '!=' :
+            return evalExpr(leftChild) != evalExpr(rightChild)
+        case '//' :
+            return evalExpr(leftChild) // evalExpr(rightChild)
+        case '^' :
+            return evalExpr(leftChild) ** evalExpr(rightChild)
     return None
