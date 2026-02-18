@@ -1,12 +1,45 @@
 names = {}
+funct = {}
 
 def evalInst(p):
-    if p == 'empty': return
+    if p == 'empty': return None
     if type(p) is int : return p
     if type(p) is str and p in names : return names[p]
 
     assert type(p) is tuple
     match p[0]:
+
+        case 'program':
+            evalInst(p[1])
+            evalInst(p[3])
+            evalInst(p[2])
+            return None
+
+        case 'define':
+            if p[1] == 'empty' : return None
+            funct[p[1][0]] = (p[1][1], 'empty')
+            if len(p) == 3:
+                evalInst(p[2])
+            return None
+
+        case 'function':
+            if p[1] == 'empty' : return None
+            if p[1][0] in funct :
+                bloc =  funct[p[1][0]][1]
+                if bloc is tuple :
+                    print("Erreur : déja funny")
+                else :
+                    funct[p[1][0]] = (p[1][1], p[1][2])
+            else :
+                funct[p[1][0]] = (p[1][1], p[1][2])
+            if len(p) == 3:
+                evalInst(p[2])
+            return None
+
+        case 'call':
+            if p[1] in funct and len(p[2]) == len(funct[p[1]][0]) and funct[p[1]][1] != 'empty':
+                evalInst(funct[p[1]][1])
+            return None
 
         case 'for':
             evalInst(p[1])

@@ -5,10 +5,37 @@ from projet.graph import printTreeGraph
 from projet.language import tokens, precedence
 
 def p_start(p):
-    """start : bloc"""
-    print(p[1])
-    printTreeGraph(p[1])
-    evalInst(p[1])
+    """start : definitions bloc functions"""
+    p[0] = ('program', p[1], p[2], p[3])
+    print(p[0])
+    printTreeGraph(p[0])
+    evalInst(p[0])
+
+def p_definitions(p):
+    """definitions : definitions definition
+                | empty"""
+    if len(p) == 2:
+        p[0] = ('define' , p[1])
+    else : p[0] = ('define', p[2], p[1])
+
+def p_definition(p):
+    """definition : FUNCTION NAME LPAREN empty RPAREN SEMI"""
+    p[0] = (p[2], p[4])
+
+def p_functions(p):
+    """functions : functions function
+                | empty"""
+    if len(p) == 2:
+        p[0] = ('function' , p[1])
+    else : p[0] = ('function', p[2], p[1])
+
+def p_function(p):
+    """function : FUNCTION NAME LPAREN empty RPAREN LBRACKET bloc RBRACKET"""
+    p[0] = (p[2], p[4], p[7])
+
+def p_empty(p):
+    """empty :"""
+    p[0] = 'empty'
 
 def p_bloc(p):
     """bloc : bloc statement SEMI
@@ -29,10 +56,13 @@ def p_statement_simple(p):
     """statement : printable"""
     p[0] = p[1]
 
+def p_statement_call(p):
+    """statement : NAME LPAREN empty RPAREN"""
+    p[0] = ('call', p[1], p[3])
+
 def p_statement_assign(p):
     """statement : NAME EQUAL expression"""
     p[0] = ("assign", p[1], p[3])
-
 
 def p_statement_print(p):
     """statement : PRINT LPAREN printable RPAREN"""
