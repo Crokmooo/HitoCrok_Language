@@ -1,5 +1,3 @@
-a = 0;
-do {
-    print(a);
-    a = a + 1;
-} while (a <= 10);
+x = "coucou";
+x++;
+print("5" + "oizudhn", x + 5, 5 + "100");

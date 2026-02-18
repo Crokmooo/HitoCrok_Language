@@ -15,6 +15,6 @@ precedence = (
     ('left', 'TIMES', 'DIVIDE', 'MODULO', 'POWER', 'FLOOR')
 )
 
-tokens = ['INF', 'EQUALEQUAL', 'EQUAL', 'NAME', 'NUMBER', 'MINUS', 'PLUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'OR',
+tokens = ['INF', 'EQUALEQUAL', 'EQUAL', 'NAME', 'NUMBER', 'STRING', 'MINUS', 'PLUS', 'TIMES', 'DIVIDE', 'LPAREN', 'RPAREN', 'OR',
           'SUP', 'INFEQ', 'SUPEQ', 'MODULO', 'NOTEQ', 'PLUSPLUS', 'MINUSMINUS','PLUSEQUAL' ,'MINUSEQUAL' ,'MULTIPLYEQUAL' ,'DIVIDEQUAL' ,'MODEQUAL' ,'FLOOREQUAL' ,'POWEREQUAL',
           'AND', 'SEMI', 'COMA', 'LBRACKET', 'RBRACKET', 'POWER', 'FLOOR'] + list(reserved.values())

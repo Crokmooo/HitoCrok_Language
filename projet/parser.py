@@ -97,6 +97,10 @@ def p_statement_update(p):
               | NAME MINUSMINUS"""
     p[0] = ('update', p[1], p[2])
 
+def p_expression_string(p):
+    """expression : STRING"""
+    p[0] = ('string', p[1])
+
 def p_statement_if(p):
     """statement : IF LPAREN expression RPAREN LBRACKET bloc RBRACKET"""
     p[0] = ('if', p[3], p[6])

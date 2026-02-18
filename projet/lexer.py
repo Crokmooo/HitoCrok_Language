@@ -59,6 +59,12 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
+def t_STRING(t):
+    r'\"([^\\\n]|(\\.))*?\"'
+    s = t.value[1:-1]
+    t.value = s.encode('utf-8').decode('unicode_escape')
+    return t
+
 def t_error(t):
     print("Illegal character", t.value[0])
     t.lexer.skip(1)
