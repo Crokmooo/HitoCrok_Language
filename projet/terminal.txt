@@ -1,14 +1,33 @@
+print("While");
+x=0;
+while(x < 10){
+    print(x);
+    x++;
+};
 
-carre();
+print("Do While");
+x=0;
+do {
+    print(x);
+    x++;
+} while (x < 10);
 
-funny carre(){
-    for (x=0;x<5;x++){
-        rectangle();
-    };
-}
+print("For");
+for (i = 0; i < 10; i++) {
+    print(i);
+};
 
-funny carre(){
-    for (x=0;x<5;x++){
-        rectangle();
-    };
-}
+print("IF");
+if (1 == 1) {
+    print("oui");
+};
+
+print("ELSE");
+if (1 == 2) {
+    print("oui");
+} else {
+    print("non");
+};
+
+test = 1;
+print(test);
