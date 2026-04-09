@@ -1,4 +1,4 @@
-names = {}
+names = [{}]
 funct = {}
 
 
@@ -14,6 +14,28 @@ def tupleToList(node, keyword):
             res = tupleToList(item, keyword)
             elements.extend(res)
     return elements
+
+
+def findName(name):
+    for scope in reversed(names):
+        if name in scope:
+            return scope[name]
+
+    return None
+
+
+def assign(name, value):
+    scope = names[-1]
+    scope[name] = value
+
+
+def assign_existing(name, value):
+    for scope in reversed(names):
+        if name in scope:
+            scope[name] = value
+
+    else:
+        assign(name, value)
 
 
 def evalInst(start):
@@ -69,28 +91,32 @@ def evalInst(start):
                     stack.append(p[2])
                 continue
 
+            case 'exit_scope':
+                names.pop()
+                continue
+
             case 'call':
                 functionName = p[1]
                 args_node = p[2]
-
                 if functionName not in funct:
-                    print(f"Funny pas trouvé")
                     continue
 
                 params_node = funct[functionName][0]
-
                 list_args = tupleToList(args_node, 'args')
                 list_params = tupleToList(params_node, 'params')
 
                 if len(list_args) == len(list_params):
-                    if funct[functionName][1] != 'empty':
-                        for i in range(len(list_params)):
-                            names[list_params[i]] = evalExpr(list_args[i])
+                    evaluated_args = [evalExpr(arg) for arg in list_args]
 
-                        stack.append(funct[functionName][1])
+                    names.append({})
+
+                    for i in range(len(list_params)):
+                        assign(list_params[i], evaluated_args[i])
+
+                    stack.append(('exit_scope',))
+                    stack.append(funct[functionName][1])
                 else:
-                    print(
-                        f"Tu sais pas compter ?")
+                    print("Problème côté arguments")
                     return
                 continue
 
@@ -100,7 +126,7 @@ def evalInst(start):
 
             case 'for':
                 stack.append(("for_call", p[2], p[4], p[3]))
-                stack.append(p[1]) # i = 0
+                stack.append(p[1])  # i = 0
                 continue
 
             case 'for_call':
@@ -138,7 +164,7 @@ def evalInst(start):
                 continue
 
             case "assign":
-                names[p[1]] = evalExpr(p[2])
+                assign_existing(p[1], evalExpr(p[2]))
                 continue
 
             case 'bloc':
@@ -181,15 +207,21 @@ def evalInst(start):
 def update(p):
     match p[2]:
         case '++':
-            names[p[1]] += 1
+            value = findName(p[1])
+            if value is None:
+                return None
+            assign_existing(p[1], value + 1)
         case '--':
-            names[p[1]] -= 1
-    return names[p[1]]
+            value = findName(p[1])
+            if value is None:
+                return None
+            assign_existing(p[1], value - 1)
+    return findName(p[1])
 
 
 def assign_op(p):
     if type(p) is int: return p
-    if type(p) is str: return names[p]
+    if type(p) is str: return findName(p)
 
     operation = p[1]
     leftChild = p[2]
@@ -197,25 +229,33 @@ def assign_op(p):
 
     match operation:
         case '+=':
-            names[leftChild] += evalExpr(rightChild)
+            value = findName(leftChild) + evalExpr(rightChild)
+            assign_existing(p, value)
         case '-=':
-            names[leftChild] -= evalExpr(rightChild)
+            value = findName(leftChild) - evalExpr(rightChild)
+            assign_existing(p, value)
         case '*=':
-            names[leftChild] *= evalExpr(rightChild)
+            value = findName(leftChild) * evalExpr(rightChild)
+            assign_existing(p, value)
         case '/=':
-            names[leftChild] /= evalExpr(rightChild)
+            value = findName(leftChild) / evalExpr(rightChild)
+            assign_existing(p, value)
         case '%=':
-            names[leftChild] %= evalExpr(rightChild)
+            value = findName(leftChild) % evalExpr(rightChild)
+            assign_existing(p, value)
         case '//=':
-            names[leftChild] //= evalExpr(rightChild)
+            value = findName(leftChild) // evalExpr(rightChild)
+            assign_existing(p, value)
         case '^=':
-            names[leftChild] **= evalExpr(rightChild)
-    return names[leftChild]
+            value = findName(leftChild) ** evalExpr(rightChild)
+            assign_existing(p, value)
+    return findName(leftChild)
 
 
 def evalExpr(p):
     if type(p) is int: return p
-    if type(p) is str and p in names: return names[p]
+    if type(p) is str and findName(p) is not None:
+        return findName(p)
     if type(p) is str: return p
     operation = p[0]
     leftChild = p[1]
