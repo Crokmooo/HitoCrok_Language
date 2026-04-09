@@ -19,7 +19,7 @@ def p_definitions(p):
     else : p[0] = ('define', p[2], p[1])
 
 def p_definition(p):
-    """definition : FUNCTION NAME LPAREN empty RPAREN SEMI"""
+    """definition : FUNCTION NAME LPAREN params RPAREN SEMI"""
     p[0] = (p[2], p[4])
 
 def p_functions(p):
@@ -30,8 +30,24 @@ def p_functions(p):
     else : p[0] = ('function', p[2], p[1])
 
 def p_function(p):
-    """function : FUNCTION NAME LPAREN empty RPAREN LBRACKET bloc RBRACKET"""
+    """function : FUNCTION NAME LPAREN params RPAREN LBRACKET bloc RBRACKET"""
     p[0] = (p[2], p[4], p[7])
+
+def p_params(p):
+    """params : param COMA params
+                | param
+                | empty"""
+    if len(p) == 2:
+        if p[1] == 'empty':
+            p[0] = ('params', 'empty')
+        else:
+            p[0] = ('params','empty', p[1])
+    elif len(p) == 4:
+        p[0] = ('params', p[1], p[3])
+
+def p_param(p):
+    """param : NAME"""
+    p[0] = p[1]
 
 def p_empty(p):
     """empty :"""
@@ -57,8 +73,24 @@ def p_statement_simple(p):
     p[0] = p[1]
 
 def p_statement_call(p):
-    """statement : NAME LPAREN empty RPAREN"""
+    """statement : NAME LPAREN args RPAREN"""
     p[0] = ('call', p[1], p[3])
+
+def p_args(p):
+    """args : arg COMA args
+            | arg
+            | empty"""
+    if len(p) == 2:
+        if p[1] == 'empty':
+            p[0] = ('args', 'empty')
+        else:
+            p[0] = ('args', 'empty', p[1])
+    elif len(p) == 4:
+        p[0] = ('args', p[1], p[3])
+
+def p_arg(p):
+    """arg : printable"""
+    p[0] = p[1]
 
 def p_statement_assign(p):
     """statement : NAME EQUAL expression"""

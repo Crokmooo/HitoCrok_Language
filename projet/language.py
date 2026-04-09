@@ -5,7 +5,8 @@ reserved = {
     "for" : 'FOR',
     'while' : "WHILE",
     'do' : "DO",
-    'funny' : 'FUNCTION'
+    'funny' : 'FUNCTION',
+    'return' : "RETURN"
 }
 
 precedence = (

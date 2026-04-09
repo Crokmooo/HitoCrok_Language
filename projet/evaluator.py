@@ -2,6 +2,20 @@ names = {}
 funct = {}
 
 
+def tupleToList(node, keyword):
+    if node == 'empty':
+        return []
+    if type(node) is not tuple or node[0] != keyword:
+        return [node]
+
+    elements = []
+    for item in node[1:]:
+        if item != 'empty':
+            res = tupleToList(item, keyword)
+            elements.extend(res)
+    return elements
+
+
 def evalInst(start):
     stack = [start]
 
@@ -40,9 +54,13 @@ def evalInst(start):
                 functionParam = p[1][1]
                 functionBloc = p[1][2]
                 if functionName in funct:
+                    if functionParam != funct[functionName][0]:
+                        print("frérot corrige la taille")
+                        return
                     bloc = funct[functionName][1]
                     if bloc is tuple:
                         print("Erreur : déja déclaré")
+                        return
                     else:
                         funct[functionName] = (functionParam, functionBloc)
                 else:
@@ -53,8 +71,27 @@ def evalInst(start):
 
             case 'call':
                 functionName = p[1]
-                if p[1] in funct and len(p[2]) == len(funct[functionName][0]) and funct[functionName][1] != 'empty':
-                    stack.append(funct[functionName][1])
+                args_node = p[2]
+
+                if functionName not in funct:
+                    print(f"Funny pas trouvé")
+                    continue
+
+                params_node = funct[functionName][0]
+
+                list_args = tupleToList(args_node, 'args')
+                list_params = tupleToList(params_node, 'params')
+
+                if len(list_args) == len(list_params):
+                    if funct[functionName][1] != 'empty':
+                        for i in range(len(list_params)):
+                            names[list_params[i]] = evalExpr(list_args[i])
+
+                        stack.append(funct[functionName][1])
+                else:
+                    print(
+                        f"Tu sais pas compter ?")
+                    return
                 continue
 
             case 'string':
