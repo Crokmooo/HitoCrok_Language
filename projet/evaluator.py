@@ -96,34 +96,15 @@ def evalInst(start):
                 names.pop()
                 continue
 
-            case 'call':
-                functionName = p[1]
-                args_node = p[2]
-                if functionName not in funct:
-                    continue
-
-                params_node = funct[functionName][0]
-                list_args = tupleToList(args_node, 'args')
-                list_params = tupleToList(params_node, 'params')
-
-                if len(list_args) == len(list_params):
-                    evaluated_args = [evalExpr(arg) for arg in list_args]
-
-                    names.append({})
-
-                    for i in range(len(list_params)):
-                        assign(list_params[i], evaluated_args[i])
-
-                    stack.append(('exit_scope',))
-                    stack.append(funct[functionName][1])
-                else:
-                    print("Problème côté arguments")
-                    return
-                continue
-
             case 'string':
                 # it's not forgotten, it's normal
                 continue
+
+            case 'return':
+                if len(p) > 1 and p[1] != 'empty':
+                    return evalExpr(p[1])
+                return None
+
 
             case 'for':
                 stack.append(("for_call", p[2], p[4], p[3]))
@@ -202,9 +183,6 @@ def evalInst(start):
             case _:
                 evalExpr(p)
 
-        print(12)
-
-
 def update(p):
     match p[2]:
         case '++':
@@ -264,6 +242,32 @@ def evalExpr(p):
     match operation:
         case 'string':
             return leftChild
+
+        case 'call':
+            functionName = leftChild
+            args_node = p[2]
+            if functionName not in funct:
+                return None
+
+            params_node = funct[functionName][0]
+            list_args = tupleToList(args_node, 'args')
+            list_params = tupleToList(params_node, 'params')
+
+            if len(list_args) == len(list_params):
+                evaluated_args = [evalExpr(arg) for arg in list_args]
+
+                names.append({})
+
+                for i in range(len(list_params)):
+                    assign(list_params[i], evaluated_args[i])
+
+                ret_val = evalInst(funct[functionName][1])
+
+                names.pop()
+                return ret_val
+            else:
+                print("Problème côté arguments")
+                return None
 
     rightChild = ensureRightConcatType(leftChild, p[2])
 

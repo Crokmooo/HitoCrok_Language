@@ -72,9 +72,17 @@ def p_statement_simple(p):
     """statement : printable"""
     p[0] = p[1]
 
-def p_statement_call(p):
-    """statement : NAME LPAREN args RPAREN"""
+def p_expression_call(p):
+    """expression : NAME LPAREN args RPAREN"""
     p[0] = ('call', p[1], p[3])
+
+def p_statement_return(p):
+    """statement : RETURN expression
+                | RETURN"""
+    if len(p) == 3:
+        p[0] = ('return', p[2])
+    else :
+        p[0] = ('return', 'empty')
 
 def p_args(p):
     """args : arg COMA args
