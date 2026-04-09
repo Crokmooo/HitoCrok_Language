@@ -38,6 +38,7 @@ def assign_existing(name, value):
         assign(name, value)
 
 
+
 def evalInst(start):
     stack = [start]
 
@@ -302,6 +303,7 @@ def evalExpr(p):
 
 def ensureRightConcatType(left, right):
     newRight = right
-    if type(evalExpr(left)) is int and type(evalExpr(right)) is str: newRight = int(evalExpr(right))
+    if type(evalExpr(left)) is int and type(evalExpr(right)) is str:
+        newRight = sum([ord(c) for c in evalExpr(right)])
     if type(evalExpr(left)) is str and type(evalExpr(right)) is int: newRight = str(evalExpr(right))
     return newRight
