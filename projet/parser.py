@@ -64,7 +64,6 @@ def p_bloc(p):
 
 def p_printable(p):
     """printable : expression
-                 | assignement
                  | update"""
     p[0] = p[1]
 
@@ -150,7 +149,6 @@ def p_expression_number(p):
 def p_expression_negative(p):
     """expression : NAME NUMBER"""
     if type(p[2]) is int and p[2] < 0:
-        print("ici", p[2])
         p[0] = ('-', p[1], p[2]*(-1))
     else :
         print("Syntax error")
@@ -180,12 +178,19 @@ def p_expression_string(p):
     p[0] = ('string', p[1])
 
 def p_statement_if(p):
-    """statement : IF LPAREN expression RPAREN LBRACKET bloc RBRACKET"""
-    p[0] = ('if', p[3], p[6])
+    """statement : IF LPAREN expression RPAREN LBRACKET bloc RBRACKET else_trigger"""
+    p[0] = ('if', p[3], p[6], ('else', p[8]))
 
-def p_statement_else(p):
-    """statement : IF LPAREN expression RPAREN LBRACKET bloc RBRACKET ELSE LBRACKET bloc RBRACKET"""
-    p[0] = ('if', p[3], p[6], ('else', p[10]))
+def p_statement_else_if(p):
+    """else_trigger : ELSE IF LPAREN expression RPAREN LBRACKET bloc RBRACKET else_trigger
+                | ELSE LBRACKET bloc RBRACKET
+                | empty"""
+    if p[1] == "empty":
+        p[0] = "empty"
+    elif p[1] == "else" and p[2] == '{':
+        p[0] = p[3]
+    elif p[2] == "if":
+        p[0] = ('if', p[4], p[7], ('else', p[9]))
 
 def p_statement_for(p):
     """statement : FOR LPAREN statement SEMI expression SEMI statement RPAREN LBRACKET bloc RBRACKET"""

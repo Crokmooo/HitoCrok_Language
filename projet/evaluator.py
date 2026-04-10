@@ -36,7 +36,6 @@ def assign_existing(name, value):
     assign(name, value)
 
 
-
 def evalInst(start):
     stack = [start]
 
@@ -55,7 +54,6 @@ def evalInst(start):
         declaration = p[0]
 
         match declaration:
-
             case 'program':
                 stack.append(p[2])  # bloc
                 stack.append(p[3])  # function
@@ -142,6 +140,9 @@ def evalInst(start):
                     stack.append(p[3][1])
                 continue
 
+            case 'assign_op':
+                return assign_op(p)
+
             case "assign":
                 assign_existing(p[1], evalExpr(p[2]))
                 continue
@@ -149,14 +150,6 @@ def evalInst(start):
             case 'bloc':
                 stack.append(p[2])
                 stack.append(p[1])
-                continue
-
-            case 'update':
-                update(p)
-                continue
-
-            case 'assign_op':
-                assign_op(p)
                 continue
 
             case 'print':
@@ -179,6 +172,7 @@ def evalInst(start):
 
             case _:
                 evalExpr(p)
+
 
 def update(p):
     match p[2]:
@@ -237,6 +231,9 @@ def evalExpr(p):
     leftChild = p[1]
 
     match operation:
+        case 'update':
+            return update(p)
+
         case 'string':
             return leftChild
 
