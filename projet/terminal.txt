@@ -85,14 +85,27 @@ print(fibo(10));
 print("CONCATENATION STRING");
 print("coucou" + 1, 1 + "coucou");
 
+return;
+
 print("COUPE CIRCUIT");
 y();
 
 funny fibo(n) {
+    x=0;
     if (n < 2) {
         return n;
     };
     return fibo(n-1) + fibo(n-2);
+}
+
+funny fibo_terminale(n, a, b) {
+    if (n == 0) {
+        return 0;
+    };
+    if (n == 1) {
+        return 1;
+    };
+    return fibo_terminale(n-1, b, a+b);
 }
 
 funny x(test, test2) {

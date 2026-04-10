@@ -62,7 +62,7 @@ def evalInst(start):
 
             case 'define':
                 if p[1] == 'empty': continue
-                funct[p[1][0]] = (p[1][1], 'empty')
+                funct[p[1][0]] = (p[1][1], 'empty', False)
                 if len(p) == 3:
                     stack.append(p[2])  # another define
                 continue
@@ -72,6 +72,17 @@ def evalInst(start):
                 functionName = p[1][0]
                 functionParam = p[1][1]
                 functionBloc = p[1][2]
+
+                isTerminal = False
+                isReturn = functionBloc[2][0] == "return"
+                if isReturn:
+                    isCall = functionBloc[2][1][0] == "call"
+                    if isCall:
+                        sameName = functionBloc[2][1][1] == functionName
+                        if sameName:
+                            isTerminal = True
+                            print(functionName, isTerminal)
+
                 if functionName in funct:
                     if functionParam != funct[functionName][0]:
                         print("frérot corrige la taille")
@@ -81,9 +92,9 @@ def evalInst(start):
                         print("Erreur : déja déclaré")
                         return
                     else:
-                        funct[functionName] = (functionParam, functionBloc)
+                        funct[functionName] = (functionParam, functionBloc, isTerminal)
                 else:
-                    funct[functionName] = (functionParam, functionBloc)
+                    funct[functionName] = (functionParam, functionBloc, isTerminal)
                 if len(p) == 3:
                     stack.append(p[2])
                 continue
@@ -243,12 +254,15 @@ def evalExpr(p):
             if functionName not in funct:
                 return None
 
+
             params_node = funct[functionName][0]
             list_args = tupleToList(args_node, 'args')
             list_params = tupleToList(params_node, 'params')
 
             if len(list_args) == len(list_params):
                 evaluated_args = [evalExpr(arg) for arg in list_args]
+
+                isTerminal = funct[functionName][2]
 
                 names.append({})
 
