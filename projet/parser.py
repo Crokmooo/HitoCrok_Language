@@ -147,6 +147,14 @@ def p_expression_number(p):
     """expression : NUMBER"""
     p[0] = p[1]
 
+def p_expression_negative(p):
+    """expression : NAME NUMBER"""
+    if type(p[2]) is int and p[2] < 0:
+        print("ici", p[2])
+        p[0] = ('-', p[1], p[2]*(-1))
+    else :
+        print("Syntax error")
+
 def p_expression_assignment_operation(p):
     """assignement : expression PLUSEQUAL expression
                  | expression MINUSEQUAL expression

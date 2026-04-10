@@ -33,9 +33,7 @@ def assign_existing(name, value):
     for scope in reversed(names):
         if name in scope:
             scope[name] = value
-
-    else:
-        assign(name, value)
+    assign(name, value)
 
 
 
@@ -104,7 +102,6 @@ def evalInst(start):
                 if len(p) > 1 and p[1] != 'empty':
                     return evalExpr(p[1])
                 return None
-
 
             case 'for':
                 stack.append(("for_call", p[2], p[4], p[3]))
@@ -209,25 +206,25 @@ def assign_op(p):
     match operation:
         case '+=':
             value = findName(leftChild) + evalExpr(rightChild)
-            assign_existing(p, value)
+            assign_existing(leftChild, value)
         case '-=':
             value = findName(leftChild) - evalExpr(rightChild)
-            assign_existing(p, value)
+            assign_existing(leftChild, value)
         case '*=':
             value = findName(leftChild) * evalExpr(rightChild)
-            assign_existing(p, value)
+            assign_existing(leftChild, value)
         case '/=':
             value = findName(leftChild) / evalExpr(rightChild)
-            assign_existing(p, value)
+            assign_existing(leftChild, value)
         case '%=':
             value = findName(leftChild) % evalExpr(rightChild)
-            assign_existing(p, value)
+            assign_existing(leftChild, value)
         case '//=':
             value = findName(leftChild) // evalExpr(rightChild)
-            assign_existing(p, value)
+            assign_existing(leftChild, value)
         case '^=':
             value = findName(leftChild) ** evalExpr(rightChild)
-            assign_existing(p, value)
+            assign_existing(leftChild, value)
     return findName(leftChild)
 
 

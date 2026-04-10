@@ -35,16 +35,22 @@ if (1 == 2) {
 test = 1;
 print(test);
 print(1,test+1,3, "quatre");
+print(fibo(10));
 
 print("coucou" + 1, 1 + "coucou");
-
 
 print(x(1,2));
 y();
 
+funny fibo(n) {
+    if (n < 2) {
+        return n;
+    };
+    return fibo(n 1) + fibo(n 2);
+}
+
 funny x(test, test2) {
-    return;
-    return test + test2 + "coucou";
+    return "coucou" + test + test2;
 }
 
 funny y() {
