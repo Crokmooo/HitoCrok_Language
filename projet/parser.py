@@ -7,9 +7,8 @@ from projet.language import tokens, precedence
 def p_start(p):
     """start : definitions bloc functions"""
     p[0] = ('program', p[1], p[2], p[3])
-    print(p[0])
-    printTreeGraph(p[0])
-    evalInst(p[0])
+    return p[0]
+
 
 def p_definitions(p):
     """definitions : definitions definition
@@ -106,6 +105,14 @@ def p_statement_assign(p):
 def p_statement_print(p):
     """statement : PRINT LPAREN printable RPAREN"""
     p[0] = ("print", p[3])
+
+def p_statement_eval(p):
+    """statement : EVAL LPAREN RPAREN"""
+    p[0] = ("eval")
+
+def p_expression_scan(p):
+    """expression : SCAN LPAREN RPAREN"""
+    p[0] = ("scan")
 
 def p_statement_print_multiple(p):
     """statement : PRINT LPAREN printable COMA other_print RPAREN"""

@@ -1,4 +1,5 @@
-from projet.evaluator import funct
+from projet.evaluator import funct, evalInst
+from projet.graph import printTreeGraph
 from projet.parser import parser
 from projet.lexer import lexer
 
@@ -7,5 +8,8 @@ s = f.read()
 f.close()
 
 
-parser.parse(s)
+program = parser.parse(s, lexer=lexer)
+print(program)
+printTreeGraph(program)
+evalInst(program)
 print(funct)

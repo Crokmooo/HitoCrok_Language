@@ -47,7 +47,14 @@ def evalInst(start):
         if type(p) is int:
             continue
         if type(p) is str:
+            if p == "eval":
+                from projet.parser import parser
+                program = parser.parse(input())
+                return evalInst(program[2])
+            elif p == "scan":
+                return evalInst(p)
             continue
+
 
         assert type(p) is tuple
 
@@ -76,12 +83,13 @@ def evalInst(start):
                 isTerminal = False
                 isReturn = functionBloc[2][0] == "return"
                 if isReturn:
-                    isCall = functionBloc[2][1][0] == "call"
-                    if isCall:
-                        sameName = functionBloc[2][1][1] == functionName
-                        if sameName:
-                            isTerminal = True
-                            print(functionName, isTerminal)
+                    if len(functionBloc[2]) > 1 and type(functionBloc[2][1]) is tuple:
+                        isCall = functionBloc[2][1][0] == "call"
+                        if isCall:
+                            sameName = functionBloc[2][1][1] == functionName
+                            if sameName:
+                                isTerminal = True
+                                print(functionName, isTerminal)
 
                 if functionName in funct:
                     if functionParam != funct[functionName][0]:
@@ -232,12 +240,56 @@ def assign_op(p):
             assign_existing(leftChild, value)
     return findName(leftChild)
 
+def is_expr(p):
+    if type(p) is int:
+        return True
+    if type(p) is str:
+        return True
+    if type(p) is tuple:
+        op = p[0]
+        valid_ops = {
+            '+', '-', '*', '/', '==', '<', '>', '&&', '||', '<=', '>=', '%', '!=', '//', '^',
+            'string', 'call', 'update'
+        }
+        if op in valid_ops:
+            if len(p) == 3 and op not in ['string', 'update', 'call']:
+                return is_expr(p[1]) and is_expr(p[2])
+            return True
+        return False
+    return False
+
+def checkExpression(p):
+    if type(p) is tuple and len(p) >= 3 and p[0] == 'bloc':
+        if p[1] != 'empty':
+            return None
+        expr = p[2]
+    else:
+        expr = p
+    if is_expr(expr):
+        return expr
+    return None
 
 def evalExpr(p):
     if type(p) is int: return p
     if type(p) is str and findName(p) is not None:
         return findName(p)
-    if type(p) is str: return p
+    if type(p) is str:
+        if p == "scan":
+            from projet.parser import parser
+
+            inputValue = input()
+
+            if inputValue[-1] == ';':
+                print("ici c pas trancho")
+                return None
+            inputValue = inputValue + ';'
+            program = parser.parse(inputValue)
+            expr = checkExpression(program[2])
+            if expr is not None:
+                return evalExpr(expr)
+            return None
+
+        return p
     operation = p[0]
     leftChild = p[1]
 

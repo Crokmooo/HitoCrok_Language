@@ -1,5 +1,7 @@
 reserved = {
     'print': 'PRINT',
+    'trancho': 'EVAL',
+    'sananes' : 'SCAN',
     'if' : "IF",
     'else' : 'ELSE',
     "for" : 'FOR',
