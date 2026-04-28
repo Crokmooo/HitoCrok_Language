@@ -211,7 +211,7 @@ def p_expression_negative(p):
         print("Syntax error")
 
 def p_expression_assignment_operation(p):
-    """assignement : expression PLUSEQUAL expression
+    """statement : expression PLUSEQUAL expression
                  | expression MINUSEQUAL expression
                  | expression MULTIPLYEQUAL expression
                  | expression DIVIDEQUAL expression
