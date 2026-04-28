@@ -1,6 +1,13 @@
-tab = [[1,2,3], [1,2]];
-x = tab[0];
-y = x[1];
-z = tab[0][1];
-
-print(x, y, z);
+x = 1;
+y = 2;
+/* test
+    zkjeakzejn
+    zerzer
+    zerzer
+*/
+z = 3;
+/* test */
+if (x < y < z) {
+    print("oui");
+};
+/* test */

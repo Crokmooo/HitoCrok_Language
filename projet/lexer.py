@@ -49,6 +49,8 @@ t_RCROCHET = r'\]'
 
 t_ignore = " \t"
 
+numberOfComments = 0
+
 def t_NAME(t):
     r'[a-zA-Z_][a-zA-Z_0-9]*'
     t.type = reserved.get(t.value, 'NAME')
@@ -68,6 +70,12 @@ def t_STRING(t):
     s = t.value[1:-1]
     t.value = s.encode('utf-8').decode('unicode_escape')
     return t
+
+def t_COMMENT(t):
+    r'\/\*(.|\n)*?\*\/'
+    global numberOfComments
+    numberOfComments += 1
+    pass
 
 def t_error(t):
     print("Illegal character", t.value[0])

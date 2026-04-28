@@ -9,7 +9,6 @@ def p_start(p):
     p[0] = ('program', p[1], p[2], p[3])
     return p[0]
 
-
 def p_definitions(p):
     """definitions : definitions definition
                 | empty"""

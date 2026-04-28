@@ -14,7 +14,7 @@ reserved = {
 precedence = (
     ('left', 'OR'),
     ('left', 'AND'),
-    ('nonassoc', 'INF', 'EQUALEQUAL', 'SUP', 'INFEQ', 'SUPEQ', 'NOTEQ'),
+    ('left', 'INF', 'EQUALEQUAL', 'SUP', 'INFEQ', 'SUPEQ', 'NOTEQ'),
     ('left', 'PLUS', 'MINUS', 'PLUSPLUS', 'MINUSMINUS'),
     ('left', 'TIMES', 'DIVIDE', 'MODULO', 'POWER', 'FLOOR'),
     ('left', 'DOT', 'LCROCHET', 'RCROCHET')
