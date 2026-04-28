@@ -74,6 +74,20 @@ def p_expression_call(p):
     """expression : NAME LPAREN args RPAREN"""
     p[0] = ('call', p[1], p[3])
 
+def p_expression_array_access(p):
+    """expression : NAME LCROCHET NUMBER RCROCHET other_crochets"""
+    p[0] = ('array_access', p[1], p[3], p[5])
+
+def p_expression_other_crochets(p):
+    """other_crochets : LCROCHET NUMBER RCROCHET other_crochets
+                | empty"""
+    if p[1] == 'empty':
+        p[0] = ('other_crochets', p[1])
+    elif len(p) == 4:
+        p[0] = ('other_crochets', p[2])
+    else:
+        p[0] = ('other_crochets', p[2], p[4])
+
 def p_statement_return(p):
     """statement : RETURN expression
                 | RETURN"""
@@ -151,6 +165,42 @@ def p_expression_group(p):
 
 def p_expression_number(p):
     """expression : NUMBER"""
+    p[0] = p[1]
+
+def p_statement_array(p):
+    """statement : NAME EQUAL array"""
+    p[0] = ('assign_array', p[1], p[3])
+
+def p_expression_arrays(p):
+    """array : LCROCHET array_args RCROCHET"""
+    p[0] = ('array', p[2])
+
+def p_expression_number_or_string(p):
+    """number_string : NUMBER
+                | STRING"""
+    p[0] = p[1]
+
+def p_expression_array_args(p):
+    """array_args : array COMA array_args
+                | array
+                | empty
+                | number_string COMA array_args
+                | number_string"""
+    if len(p) == 4:
+        p[0] = ('array_args', p[1], p[3])
+    else :
+        if p[1] == 'empty':
+            p[0] = ('array_args', p[1])
+        else : p[0] = ('array_args', p[1], 'empty')
+
+def p_expression_array_method(p):
+    """expression : NAME DOT NAME LPAREN array_method_arg RPAREN"""
+    p[0] = ('array_method', p[1], p[3], p[5])
+
+def p_expression_array_method_arg(p):
+    """array_method_arg : array
+                | printable
+                | empty"""
     p[0] = p[1]
 
 def p_expression_negative(p):

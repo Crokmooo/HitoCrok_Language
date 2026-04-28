@@ -1,3 +1,5 @@
+from unittest import case
+
 names = [{}]
 funct = {}
 
@@ -166,6 +168,16 @@ def evalInst(start):
                 assign_existing(p[1], evalExpr(p[2]))
                 continue
 
+            case 'assign_array':
+                tab = evalArray(p[2])
+
+                arrayType = getArrayType(tab)
+                if arrayType is not None and not isTheSameType(tab, arrayType):
+                    print("Tout le tableau a pas le même type, c'est pas bon")
+                    continue
+                assign_existing(p[1], tab)
+                continue
+
             case 'bloc':
                 stack.append(p[2])
                 stack.append(p[1])
@@ -271,6 +283,8 @@ def checkExpression(p):
 
 def evalExpr(p):
     if type(p) is int: return p
+    if type(p) is str and p == "empty":
+        return None
     if type(p) is str and findName(p) is not None:
         return findName(p)
     if type(p) is str:
@@ -300,12 +314,25 @@ def evalExpr(p):
         case 'string':
             return leftChild
 
+        case 'array_method':
+            return handleArrayMethod(p)
+
+        case 'array_access':
+            array = findName(p[1])
+            if array is None:
+                return None
+            firstIndex = p[2]
+            arrayValue = getArrayValue(array[firstIndex], p[3])
+            if arrayValue is not None:
+                return arrayValue
+            return None
+
+
         case 'call':
             functionName = leftChild
             args_node = p[2]
             if functionName not in funct:
                 return None
-
 
             params_node = funct[functionName][0]
             list_args = tupleToList(args_node, 'args')
@@ -363,6 +390,118 @@ def evalExpr(p):
         case '^':
             return evalExpr(leftChild) ** evalExpr(rightChild)
     return None
+
+def getArrayValue(array, accessArrayTuple):
+    if accessArrayTuple[1] == "empty":
+        return array
+    else :
+        if type(accessArrayTuple[1]) is not int:
+            print("L'index d'un tableau est forcément un entier")
+            return None
+        return getArrayValue(array[accessArrayTuple[1]], accessArrayTuple[2])
+
+
+def handleArrayMethod(p):
+    arrayName = p[1]
+    methodName = p[2]
+    arg = evalExpr(p[3])
+
+    array = findName(arrayName)
+
+    if array is None:
+        print("Ta variable existe pas")
+        return None
+
+    match methodName:
+
+        case 'push':
+            if arg is None:
+                print("Un argument est attendu")
+                return None
+            elif getArrayType(array) != getArrayType([arg]):
+                print("C pas le bon type !")
+                return None
+            array.append(arg)
+            assign_existing(arrayName, array)
+            return array
+
+        case 'pop':
+            if arg is not None:
+                print("Un argument n'est pas attendu")
+                return None
+
+            array.pop(-1)
+            assign_existing(arrayName, array)
+            return array
+
+        case 'remove':
+            if arg is None:
+                print("Un argument est attendu")
+                return None
+            elif type(arg) is not int:
+                print("Il faut une int pour remove (indice de l'élement)")
+                return None
+            elif arg >= len(array) or arg < 0:
+                print("L'indice à retirer doit être inclus dans la taille du tableau")
+            array.pop(arg)
+            assign_existing(arrayName, array)
+            return array
+
+        case 'show':
+            if arg is not None:
+                print("Un argument n'est pas attendu")
+                return None
+            print("HitoCrok", array)
+            return array
+
+        case 'size':
+            if arg is not None:
+                print("Un argument n'est pas attendu")
+                return None
+            return len(array)
+
+
+def getArrayType(array):
+    for item in array:
+        if type(item) is list:
+            arrayType = getArrayType(item)
+            if type is not None:
+                return arrayType
+        elif item is not None:
+            return type(item)
+    return None
+
+def isTheSameType(array, base_type):
+    for item in array:
+        if type(item) is list:
+            if not isTheSameType(item, base_type):
+                return False
+        elif item is not None and type(item) is not base_type:
+            return False
+    return True
+
+
+def evalArray(p):
+    if p == 'empty':
+        return []
+
+    if type(p) is not tuple:
+        return evalExpr(p)
+
+    if p[0] == 'array':
+        return evalArray(p[1])
+
+    if p[0] == 'array_args':
+        if p[1] == 'empty':
+            return []
+
+        current = evalArray(p[1])
+
+        if len(p) == 3:
+            return [current] + evalArray(p[2])
+        return [current]
+
+    return evalExpr(p)
 
 
 def ensureRightConcatType(left, right):

@@ -43,6 +43,10 @@ t_COMA = r','
 t_LBRACKET = r'\{'
 t_RBRACKET = r'\}'
 
+t_DOT = r'\.'
+t_LCROCHET = r'\['
+t_RCROCHET = r'\]'
+
 t_ignore = " \t"
 
 def t_NAME(t):
