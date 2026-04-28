@@ -160,7 +160,8 @@ def evalInst(start):
                 continue
 
             case 'assign_op':
-                return assign_op(p)
+                assign_op(p)
+                continue
 
             case "assign":
                 assign_existing(p[1], evalExpr(p[2]))
