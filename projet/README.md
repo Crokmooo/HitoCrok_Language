@@ -427,6 +427,18 @@ tab = [1,2,3];
 print(tab.size()); // Affiche 3
 ```
 
+### 12. Commentaires
+
+Il est possible d'écrire des langages dans le code. Les commentaires sont multi-lignes. 
+
+```
+/*
+Lorem
+Ipsum
+*/
+```
+
+
 ## Fonctionnement de l’interpréteur
 
 L’interpréteur s’appuie sur une fonction principale `evalInst` (non récursive) qui évalue l’arbre de syntaxe abstrait.
@@ -453,8 +465,3 @@ Sortie :
 ```
 HitoCrok > 3
 ```
-
-## Prochaines implémentations
-
-Les prochaines implémentations dans le langage sont les suivantes : 
-- Gestion des tableaux et leurs méthodes.
