@@ -60,7 +60,7 @@ x <= 1;
 x >= 1;
 ```
 
-#### Opérateur logiques 
+#### Opérateurs logiques 
 ```
 (x > 0) && (x < 10);   // ET logique
 (x < 0) || (x > 10);   // OU logique
@@ -87,15 +87,17 @@ print(x + 1);
 
 ---
 
-### 3. Instructions conditionnelles : if / else
+### 3. Instructions conditionnelles : if / else / else if 
 
 Gestion des structures conditionnelles avec ou sans branche `else`.
 
 ```
-if (1 == 1) {
+if (1 == 2) {
     print(1);
-} else {
+} else if (1 == 1) {
     print(2);
+} else {
+    print(3);
 };
 ```
 
@@ -152,7 +154,7 @@ string = "x";
 
 print(string + "y"); // affiche "xy"
 print(string + 1);   // affiche "x1"
-print(1 + string);   // affiche 89 (conversion ASCII de "x")
+print(1 + string);   // affiche 121 (conversion ASCII de "xy")
 ```
 
 #### Affichage de chaînes
@@ -208,7 +210,54 @@ funny x() {
 
 ---
 
-### 8. Implémentation d'incrémentation et d'affectation élargie
+### 8. Fonction avec arguments et retour coupe circuit
+
+
+#### Avec arguments
+```
+funny x(string);
+
+print(x("hello")); // Affiche hello
+
+funny x(string) {
+    return string;
+}
+```
+
+#### Avec plusieurs return
+
+```
+funny x(number);
+
+print(x(1)); // Affiche hello
+print(x(2)); // Affiche world
+
+funny x(number) {
+    if (number == 1) {
+        return "hello;
+    }
+    return "world";
+}
+```
+
+#### Fonctions récursives
+
+```
+funny x(number);
+
+print(x(1)); // Affiche hello
+print(x(2)); // Affiche world
+
+funny x(number) {
+    if (number == 1) {
+        return "hello;
+    }
+    return "world";
+}
+```
+---
+
+### 9. Implémentation d'incrémentation et d'affectation élargie
 
 Le langage permet de gérer différents types d'affection / incrémentation pour les variables.
 
@@ -233,6 +282,150 @@ x //= 2; // Divise x par 2 (absolue)
 x ^= 2; // x vaut x puissance 2 (x²)
 ```
 
+---
+
+### 10. Fonctions Scan
+
+Notre langage propose deux fonctions pour scanner ce que l'utilisateur écrira dans le terminal : 
+- **sananes()** récupérant la valeur pour l'exploiter comme une expression
+- **trancho()** récupérant un programme exécuté à la volée, pouvant avoir un impact sur le reste de l'exécution.
+
+#### Fonction Sananes
+
+**sananes()** est l'équivalent d'un **input()** ou d'un **scanf()**.\
+
+
+```
+x = sananes();
+// Utilisateur écrit 1+1
+print(x); // Affiche 2
+
+y = sananes();
+// Utilisateur écrit "Hello World!"
+print(y); // Affiche Hellow World!
+
+```
+
+#### Fonction Trancho
+
+**trancho()** génère un nouvel arbre AST passant dans evalInst avec sa propre pile, mais en ayant accès aux fonctions définis ainsi qu'aux variables (des différents scopes précédemment créés).
+
+```
+x = 1;
+trancho();
+// Utilisateur écrit x=2;
+print(x); // Affiche 2 et non 1 (x a été mis à jour).
+```
+
+```
+funny x();
+
+x = 1;
+trancho();
+// Utilisateur écrit x();x+=1;
+
+// Affiche "hello world!"
+print(x); // Affiche 2 et non 1 (x a été mis à jour).
+
+funny x(){
+    print("hello world!");
+}
+```
+
+### 
+
+---
+
+### 11. Gestion des tableaux 
+
+Notre langage propose une gestion des tableaux (une ou plusieurs dimensions).
+Un tableau ne peut posséder qu'un seul type : celui de son premier élément (en profondeur si plusieurs dimensions)
+
+```
+tab = [1,2]; // tab est un tableau de 2 éléments : 1 et 2
+tab2 = [[1,2], [1,2]]; // tab est un tableau à deux dimensions
+tab3 = ["a", 1]; // n'est pas possible
+```
+
+Il est possible d'accéder à un élément du tableau sur une ou plusieurs dimensions :
+
+```
+tab = [1,2];
+x = tab[0]: // x vaut 1
+
+tab2 = [[1,2], [1,2]];
+x = tab[0]; // x vaut [1,2]
+y = tab[0][0]; // y vaut 1
+z = x[0]; // z vaut 1 
+```
+
+#### Méthodes disponibles sur les tableaux
+
+##### 1. Push 
+
+La méthode push permet d'ajouter un élément au tableau (argument obligatoire) : 
+
+```
+tab = [1,2];
+tab.push(1);
+print(tab); // Affiche [1, 2, 1]
+```
+
+```
+tab = [[1,2], [1,2]];
+tab.push(1);
+print(tab); // Affiche [[1, 2], [1, 2], 1]
+```
+
+##### 2. Pop
+
+La méthode pop permet de retirer le dernier élément du tableau (aucun argument) :
+
+```
+tab = [1,2];
+tab.pop();
+print(tab); // Affiche [1]
+```
+
+```
+tab = [[1,2], [1,2]];
+tab.pop();
+print(tab); // Affiche [[1, 2]]
+```
+
+##### 3. Remove
+
+La méthode remove permet de retirer l'élément du tableau à un index précis (avec un argument) :
+
+```
+tab = [1,2,3];
+tab.remove(1);
+print(tab); // Affiche [1,3]
+```
+
+```
+tab = [[1,2], [3,4], [5,6]];
+tab.remove(1);
+print(tab); // Affiche [[1, 2], [5, 6]]
+```
+
+##### 4. Show
+
+La méthode show permet d'afficher le contenu d'un tableau comme un print : 
+
+```
+tab = [1,2,3];
+tab.show(); // Affiche [1, 2, 3]
+```
+
+##### 5. Size
+
+La méthode size d'obtenir la taille du tableau (sur la première dimension) :
+
+```
+tab = [1,2,3];
+print(tab.size()); // Affiche 3
+```
 
 ## Fonctionnement de l’interpréteur
 
@@ -258,13 +451,10 @@ print(x + 2);
 Sortie :
 
 ```
-calc > 3
+HitoCrok > 3
 ```
 
 ## Prochaines implémentations
 
 Les prochaines implémentations dans le langage sont les suivantes : 
-- Gestion des else if (if / else if / else)
-- Gestion des appels de fonction avec arguments, retours de valeurs et return coupe circuit;
-- Gestion du scope des variables
 - Gestion des tableaux et leurs méthodes.

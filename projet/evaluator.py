@@ -52,9 +52,11 @@ def evalInst(start):
             if p == "eval":
                 from projet.parser import parser
                 program = parser.parse(input())
-                return evalInst(program[2])
+                stack.append(program[2])
+                continue
             elif p == "scan":
-                return evalInst(p)
+                stack.append(p)
+                continue
             continue
 
 
