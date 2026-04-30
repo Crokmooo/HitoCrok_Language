@@ -429,7 +429,7 @@ print(tab.size()); // Affiche 3
 
 ### 12. Commentaires
 
-Il est possible d'écrire des langages dans le code. Les commentaires sont multi-lignes. 
+Il est possible d'écrire des commentaires dans le code. Les commentaires sont multi-lignes. 
 
 ```
 /*
