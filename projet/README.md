@@ -378,6 +378,17 @@ y = tab[0][0]; // y vaut 1
 z = x[0]; // z vaut 1 
 ```
 
+Il est également possible de mettre à jour une valeur à un index précis du tableau (si bon type).
+
+```
+tab = [[1,2],[1,2]];
+print(tab); //  Affiche [[1, 2], [1, 2]]
+
+tab[0][0] = [1,2];
+print(tab); // Affiche [[[1, 2], 2], [1, 2]]
+```
+
+
 #### Méthodes disponibles sur les tableaux
 
 ##### 1. Push 

@@ -10,6 +10,7 @@ f.close()
 
 program = parser.parse(s, lexer=lexer)
 #printTreeGraph(program)
+print(program)
 evalInst(program)
 if (commentCount.numberOfComments > 0):
     print("HitoCrok - Admin> Tu as écrit", commentCount.numberOfComments, "commentaire", end="")
