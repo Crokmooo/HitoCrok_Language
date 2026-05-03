@@ -121,6 +121,11 @@ def evalInst(start):
 
             case 'return':
                 if len(p) > 1 and p[1] != 'empty':
+                    if type(p[1]) is tuple and p[1][0] == 'call' :
+                        functionCalledName = p[1][1]
+                        if functionCalledName in funct and funct[functionCalledName][2]:
+                            return p[1]
+
                     return evalExpr(p[1])
                 return None
 
@@ -180,6 +185,35 @@ def evalInst(start):
                     continue
                 assign_existing(p[1], tab)
                 continue
+
+            case 'assign_index_array':
+                tab = findName(p[1])
+                if tab is None:
+                    print("Tableau introuvable")
+                    continue
+                else :
+
+                    expressionOrArray = p[4]
+
+                    if type(expressionOrArray) is tuple and expressionOrArray[0] == "array":
+                        valueBeforeAssign = evalArray(expressionOrArray)
+                    else :
+                        valueBeforeAssign = evalExpr(expressionOrArray)
+
+                    arrayType = getArrayType(tab)
+
+                    if arrayType is not None:
+                        if type(valueBeforeAssign) is list:
+                            if not isTheSameType(valueBeforeAssign, arrayType):
+                                print("La valeur indexée n'est pas du même type que le tableau")
+                                continue
+                        elif type(valueBeforeAssign) is not arrayType:
+                            print("La valeur indexée n'est pas du même type que le tableau")
+                            continue
+
+                    assign_index_array(tab,p[2], p[3], valueBeforeAssign)
+                    assign_existing(p[1], tab)
+                    continue
 
             case 'bloc':
                 stack.append(p[2])
@@ -255,7 +289,7 @@ def assign_op(p):
             assign_existing(leftChild, value)
     return findName(leftChild)
 
-def is_expr(p):
+def isExpr(p):
     if type(p) is int:
         return True
     if type(p) is str:
@@ -268,7 +302,7 @@ def is_expr(p):
         }
         if op in valid_ops:
             if len(p) == 3 and op not in ['string', 'update', 'call']:
-                return is_expr(p[1]) and is_expr(p[2])
+                return isExpr(p[1]) and isExpr(p[2])
             return True
         return False
     return False
@@ -280,7 +314,7 @@ def checkExpression(p):
         expr = p[2]
     else:
         expr = p
-    if is_expr(expr):
+    if isExpr(expr):
         return expr
     return None
 
@@ -338,23 +372,40 @@ def evalExpr(p):
                 return None
 
             params_node = funct[functionName][0]
-            list_args = tupleToList(args_node, 'args')
-            list_params = tupleToList(params_node, 'params')
+            listArgs = tupleToList(args_node, 'args')
+            listParams = tupleToList(params_node, 'params')
 
-            if len(list_args) == len(list_params):
-                evaluated_args = [evalExpr(arg) for arg in list_args]
+            if len(listArgs) == len(listParams):
+                evaluated_args = []
+                for arg in listArgs:
+                    evaluated_args.append(evalExpr(arg))
 
                 isTerminal = funct[functionName][2]
 
                 names.append({})
 
-                for i in range(len(list_params)):
-                    assign(list_params[i], evaluated_args[i])
+                for i in range(len(listParams)):
+                    assign(listParams[i], evaluated_args[i])
 
-                ret_val = evalInst(funct[functionName][1])
-
-                names.pop()
-                return ret_val
+                callBloc = funct[functionName][1]
+                if isTerminal:
+                    print("Fonction terminale lancée")
+                    while True:
+                        callRetValue = evalInst(callBloc)
+                        if type(callRetValue) is tuple and callRetValue[0] == 'call':
+                            listNewArgs = []
+                            updatedCallArgs = tupleToList(callRetValue[2], 'args')
+                            for arg in updatedCallArgs:
+                                listNewArgs.append(evalExpr(arg))
+                            for i in range(len(listParams)):
+                                assign(listParams[i], listNewArgs[i])
+                        else :
+                            names.pop()
+                            return callRetValue
+                else:
+                    callRetValue = evalInst(callBloc)
+                    names.pop()
+                    return callRetValue
             else:
                 print("Problème côté arguments")
                 return None
@@ -483,6 +534,13 @@ def isTheSameType(array, base_type):
             return False
     return True
 
+
+def assign_index_array(array, index, other_crochet, updated_value):
+    if len(other_crochet) == 2:
+        array[index] = updated_value
+    else :
+        if len(other_crochet) == 3:
+            return assign_index_array(array[index], other_crochet[1], other_crochet[2], updated_value)
 
 def evalArray(p):
     if p == 'empty':

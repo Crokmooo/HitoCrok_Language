@@ -257,6 +257,25 @@ funny x(number) {
 ```
 ---
 
+#### Fonctions récursives terminales optimisées
+
+Notre langage permet d'optimiser l'exécution d'une fonction récursive terminale.
+
+```
+print(fact(5, 1));
+
+funny fact(n, acc) {
+    if (n == 0) {
+        return acc;
+    };
+    return fact(n-1, n*acc);
+}
+```
+
+Pour qu'une fonction récursive soit terminale, son dernier return doit obligatoirement être un appel à elle-même uniquement (pas d'expression).
+Ainsi, l'exécution de la fonction peut être faite grâce à une boucle, limitant la taille de la pile.
+
+
 ### 9. Implémentation d'incrémentation et d'affectation élargie
 
 Le langage permet de gérer différents types d'affection / incrémentation pour les variables.
@@ -358,6 +377,17 @@ x = tab[0]; // x vaut [1,2]
 y = tab[0][0]; // y vaut 1
 z = x[0]; // z vaut 1 
 ```
+
+Il est également possible de mettre à jour une valeur à un index précis du tableau (si bon type).
+
+```
+tab = [[1,2],[1,2]];
+print(tab); //  Affiche [[1, 2], [1, 2]]
+
+tab[0][0] = [1,2];
+print(tab); // Affiche [[[1, 2], 2], [1, 2]]
+```
+
 
 #### Méthodes disponibles sur les tableaux
 

@@ -115,6 +115,11 @@ def p_statement_assign(p):
     """statement : NAME EQUAL expression"""
     p[0] = ("assign", p[1], p[3])
 
+def p_statement_assign_array(p):
+    """statement : NAME LCROCHET NUMBER RCROCHET other_crochets EQUAL expression
+                | NAME LCROCHET NUMBER RCROCHET other_crochets EQUAL array"""
+    p[0] = ("assign_index_array", p[1], p[3], p[5], p[7])
+
 def p_statement_print(p):
     """statement : PRINT LPAREN printable RPAREN"""
     p[0] = ("print", p[3])

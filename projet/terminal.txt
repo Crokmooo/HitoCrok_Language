@@ -1,13 +1,4 @@
-x = 1;
-y = 2;
-/* test
-    zkjeakzejn
-    zerzer
-    zerzer
-*/
-z = 3;
-/* test */
-if (x < y < z) {
-    print("oui");
-};
-/* test */
+tab = [[1,2],[1,2]];
+print(tab);
+tab[0][0] = [1,2];
+print(tab);
