@@ -186,6 +186,35 @@ def evalInst(start):
                 assign_existing(p[1], tab)
                 continue
 
+            case 'assign_index_array':
+                tab = findName(p[1])
+                if tab is None:
+                    print("Tableau introuvable")
+                    continue
+                else :
+
+                    expression_or_array = p[4]
+
+                    if type(expression_or_array) is tuple and expression_or_array[0] == "array":
+                        value_before_assign = evalArray(expression_or_array)
+                    else :
+                        value_before_assign = evalExpr(expression_or_array)
+
+                    arrayType = getArrayType(tab)
+
+                    if arrayType is not None:
+                        if type(value_before_assign) is list:
+                            if not isTheSameType(value_before_assign, arrayType):
+                                print("La valeur indexée n'est pas du même type que le tableau")
+                                continue
+                        elif type(value_before_assign) is not arrayType:
+                            print("La valeur indexée n'est pas du même type que le tableau")
+                            continue
+
+                    assign_index_array(tab,p[2], p[3], value_before_assign)
+                    assign_existing(p[1], tab)
+                    continue
+
             case 'bloc':
                 stack.append(p[2])
                 stack.append(p[1])
@@ -505,6 +534,17 @@ def isTheSameType(array, base_type):
         elif item is not None and type(item) is not base_type:
             return False
     return True
+
+
+def assign_index_array(array, index, other_crochet, updated_value):
+    if other_crochet[1] == "empty":
+        array[index] = updated_value
+    else :
+        if len(other_crochet) == 3:
+            return assign_index_array(array[index], other_crochet[1], other_crochet[2], updated_value)
+        else :
+            create_empty_other_crochet = ('other_crochets', 'empty')
+            return assign_index_array(array[index], other_crochet[0], create_empty_other_crochet, updated_value)
 
 
 def evalArray(p):
