@@ -257,6 +257,25 @@ funny x(number) {
 ```
 ---
 
+#### Fonctions récursives terminales optimisées
+
+Notre langage permet d'optimiser l'exécution d'une fonction récursive terminale.
+
+```
+print(fact(5, 1));
+
+funny fact(n, acc) {
+    if (n == 0) {
+        return acc;
+    };
+    return fact(n-1, n*acc);
+}
+```
+
+Pour qu'une fonction récursive soit terminale, son dernier return doit obligatoirement être un appel à elle-même uniquement (pas d'expression).
+Ainsi, l'exécution de la fonction peut être faite grâce à une boucle, limitant la taille de la pile.
+
+
 ### 9. Implémentation d'incrémentation et d'affectation élargie
 
 Le langage permet de gérer différents types d'affection / incrémentation pour les variables.

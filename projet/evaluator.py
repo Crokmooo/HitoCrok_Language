@@ -121,6 +121,11 @@ def evalInst(start):
 
             case 'return':
                 if len(p) > 1 and p[1] != 'empty':
+                    if type(p[1]) is tuple and p[1][0] == 'call' :
+                        functionCalledName = p[1][1]
+                        if functionCalledName in funct and funct[functionCalledName][2]:
+                            return p[1]
+
                     return evalExpr(p[1])
                 return None
 
@@ -342,7 +347,9 @@ def evalExpr(p):
             list_params = tupleToList(params_node, 'params')
 
             if len(list_args) == len(list_params):
-                evaluated_args = [evalExpr(arg) for arg in list_args]
+                evaluated_args = []
+                for arg in list_args:
+                    evaluated_args.append(evalExpr(arg))
 
                 isTerminal = funct[functionName][2]
 
@@ -351,10 +358,26 @@ def evalExpr(p):
                 for i in range(len(list_params)):
                     assign(list_params[i], evaluated_args[i])
 
-                ret_val = evalInst(funct[functionName][1])
+                call_bloc = funct[functionName][1]
+                if isTerminal:
+                    print("Fonction terminale lancée")
+                    while True:
+                        call_ret_value = evalInst(call_bloc)
+                        if not (type(call_ret_value) is tuple and call_ret_value[0] == 'call'):
+                            names.pop()
+                            return call_ret_value
+                        else :
+                            list_new_args = []
+                            updated_call_args = tupleToList(call_ret_value[2], 'args')
+                            for arg in updated_call_args:
+                                list_new_args.append(evalExpr(arg))
 
-                names.pop()
-                return ret_val
+                            for i in range(len(list_params)):
+                                assign(list_params[i], list_new_args[i])
+                else:
+                    call_ret_value = evalInst(call_bloc)
+                    names.pop()
+                    return call_ret_value
             else:
                 print("Problème côté arguments")
                 return None

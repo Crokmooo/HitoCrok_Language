@@ -1,13 +1,8 @@
-x = 1;
-y = 2;
-/* test
-    zkjeakzejn
-    zerzer
-    zerzer
-*/
-z = 3;
-/* test */
-if (x < y < z) {
-    print("oui");
-};
-/* test */
+print(fact(5, 1));
+
+funny fact(n, acc) {
+    if (n == 0) {
+        return acc;
+    };
+    return fact(n-1, n*acc);
+}
